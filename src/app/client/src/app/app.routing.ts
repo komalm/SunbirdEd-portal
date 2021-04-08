@@ -53,6 +53,9 @@ const appRoutes: Routes = [
     path: MY_GROUPS, loadChildren: 'app/modules/groups/groups.module#GroupsModule'
   },
   {
+    path: 'certificate2', loadChildren: 'app/modules/certificate2/certificate2.module#Certificate2Module'
+  },
+  {
     path: 'error', component: ErrorPageComponent
   },
   {
