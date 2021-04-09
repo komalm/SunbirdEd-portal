@@ -23,11 +23,15 @@ export class AppLandingSectionComponent implements OnInit {
   FIRST_PANEL_LAYOUT;
   SECOND_PANEL_LAYOUT;
   titleToDisplay;
+  displayimage:boolean;
   public unsubscribe$ = new Subject<void>();
 
   constructor(public layoutService: LayoutService, private resourceService: ResourceService) { }
 
   ngOnInit() {
+    if(this.svgToDisplay==undefined){
+      this.displayimage=true;
+    }
     this.initLayout();
   }
   initLayout() {
