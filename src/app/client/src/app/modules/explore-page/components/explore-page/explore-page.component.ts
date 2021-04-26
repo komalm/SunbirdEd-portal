@@ -3,10 +3,11 @@ import { OrgDetailsService, UserService, SearchService, FormService, PlayerServi
 import { PublicPlayerService } from '@sunbird/public';
 import { Component, OnInit, OnDestroy, HostListener, AfterViewInit } from '@angular/core';
 import {
-    ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE
+    UtilService,ResourceService, ToasterService, ConfigService, NavigationHelperService, LayoutService, COLUMN_TYPE
 } from '@sunbird/shared';
 import { Router, ActivatedRoute } from '@angular/router';
-import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach } from 'lodash-es';
+import * as _ from 'lodash-es';
+import { cloneDeep, get, find, map as _map, pick, omit, groupBy, sortBy, replace, uniqBy, forEach, has, uniq, flatten, each, isNumber, toString } from 'lodash-es';
 import { IInteractEventEdata, IImpressionEventInput, TelemetryService } from '@sunbird/telemetry';
 import { map, tap, switchMap, skipWhile, takeUntil } from 'rxjs/operators';
 import { ContentSearchService } from '@sunbird/content-search';
@@ -155,21 +156,29 @@ export class ExplorePageComponent implements OnInit, OnDestroy, AfterViewInit {
     public getPageData(input) {
         return find(this.formData, data => data.contentType === input);
     }
-
+//Changes by SomeshB for subject and audience filter on 23/04/2021
     public getFilters({ filters, status }) {
         this.showLoader = true;
         if (!filters || status === 'FETCHING') { return; }
         const currentPageData = this.getPageData(get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || 'textbook');
-        this.selectedFilters = pick(filters, ['board', 'medium', 'gradeLevel', 'channel']);
-        if (localStorage.getItem('userType') && currentPageData.contentType !== 'all') {
-            const userType = localStorage.getItem('userType');
-            const userTypeMapping = this.configService.appConfig.userTypeMapping;
-            _map(userTypeMapping, (value, key) => {
-                if (userType === key) {
-                    this.selectedFilters['audience'] = value;
-                }
-            });
+        this.selectedFilters = pick(filters, ['board', 'medium', 'gradeLevel', 'channel', 'subject', 'audience']);
+        if (has(filters, 'audience') || (localStorage.getItem('userType') && currentPageData.contentType !== 'all')) {
+            const userTypes = get(filters, 'audience') || [localStorage.getItem('userType')];
+            const audienceSearchFilterValue = _.get(filters, 'audienceSearchFilterValue');
+            const userTypeMapping = get(this.configService, 'appConfig.userTypeMapping');
+            this.selectedFilters['audience'] = audienceSearchFilterValue || uniq(flatten(_map(userTypes, userType => userTypeMapping[userType])));
         }
+        // if (this.utilService.isDesktopApp) {
+        //     const userPreferences: any = this.userService.anonymousUserPreference;
+        //     if (userPreferences) {
+        //         _.forEach(['board', 'medium', 'gradeLevel'], (item) => {
+        //             if (!_.has(this.selectedFilters, item)) {
+        //                 this.selectedFilters[item] = _.isArray(userPreferences.framework[item]) ?
+        //                 userPreferences.framework[item] : _.split(userPreferences.framework[item], ', ');
+        //             }
+        //         });
+        //     }
+        // }
         this.apiContentList = [];
         this.pageSections = [];
         this.pageTitleSrc = get(this.resourceService, 'RESOURCE_CONSUMPTION_ROOT') + get(currentPageData, 'title');
