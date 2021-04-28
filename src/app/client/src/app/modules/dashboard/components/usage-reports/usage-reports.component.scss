@@ -42,3 +42,26 @@
     margin-bottom: calculateRem(-48px);
     height: auto;
   }
+
+ .column {
+    float: left;
+    width: 60%;
+    padding: 13px;
+    margin-left: 300px;
+}
+
+.pad-top{
+    padding-top: 50px;
+}
+
+/* Clearfix (clear floats) */
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+  .certificateimg {
+    width: 100%;
+}

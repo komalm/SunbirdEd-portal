@@ -56,20 +56,20 @@ export class UsageReportsComponent implements OnInit, AfterViewInit {
     this.initLayout();
     const reportsLocation = (<HTMLInputElement>document.getElementById('reportsLocation')).value;
     this.slug = _.get(this.userService, 'userProfile.rootOrg.slug');
-    this.usageService.getData(`/${reportsLocation}/${this.slug}/config.json`)
-      .subscribe(data => {
-        if (_.get(data, 'responseCode') === 'OK') {
-          this.noResult = false;
-          this.reportMetaData = _.get(data, 'result');
-          if (this.reportMetaData[0]) { this.renderReport(this.reportMetaData[0]); }
-        }
-      }, (err) => {
-        console.log(err);
-        this.noResultMessage = {
-          'messageText': 'messages.stmsg.m0131'
-        };
-        this.noResult = true;
-      });
+    // this.usageService.getData(`/${reportsLocation}/${this.slug}/config.json`)
+    //   .subscribe(data => {
+    //     if (_.get(data, 'responseCode') === 'OK') {
+    //       this.noResult = false;
+    //       this.reportMetaData = _.get(data, 'result');
+    //       if (this.reportMetaData[0]) { this.renderReport(this.reportMetaData[0]); }
+    //     }
+    //   }, (err) => {
+    //     console.log(err);
+    //     this.noResultMessage = {
+    //       'messageText': 'messages.stmsg.m0131'
+    //     };
+    //     this.noResult = true;
+    //   });
   }
 
   setTelemetryInteractObject(val) {

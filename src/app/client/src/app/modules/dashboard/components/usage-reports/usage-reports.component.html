@@ -1,18 +1,41 @@
 <app-landing-section [noTitle]="true" [layoutConfiguration]="layoutConfiguration">
 
 </app-landing-section>
+<div class="pad-top">
+<div class="row">
+  
+         <div class="column">
+          <ul class="m-0">
+        <li><b>Creation Analytics: </b> </li> 
+        </ul>
+ <img src="{{'assets/images/creation-analytics-1.png'}}" class="certificateimg">
+    </div>
+   
+</div>
+<div></div>
+<div class="row">
+ 
+        <div class="column">
+         <ul class="m-0">
+        <li><b>Consumption Analytics: </b> </li> 
+    
+        </ul>
+        <img src="{{'assets/images/consumtion-Analytics-2.png'}}" class="certificateimg">
+    </div>
 
-<div [ngClass]="layoutConfiguration ? 'sbt-container relative9':''" >
+</div>
+</div>
+<!-- <div [ngClass]="layoutConfiguration ? 'sbt-container relative9':''" >
 <div class="ui" [appTelemetryImpression]="telemetryImpression">
   <div class="twelve wide column px-0 sb-workspace-bg">
     <div class="ui container stackable grid m-0 sb-mid-container-min-height dashboard-body-scroll" *ngIf="!noResult">
       <div class="two wide column sb-sidebar-menu p-0">
         <h5 class="p-16">{{resourceService.frmelmnts?.lnk?.dashboard}}</h5>
         <ul class="m-0">
-          <li appTelemetryInteract [telemetryInteractObject]="setTelemetryInteractObject(report.id)"
+        <li appTelemetryInteract [telemetryInteractObject]="setTelemetryInteractObject(report.id)"
             [telemetryInteractEdata]="setTelemetryInteractEdata('report-view')" *ngFor="let report of reportMetaData"
             (click)="renderReport(report)" class="item m-0" [ngClass]="{'active': currentReport.id === report.id}">
-            {{report.label || report.title}}</li>
+            {{report.label || report.title}}</li> 
         </ul>
       </div>
       <div class="ten wide column sb-sideview-tab-container pl-40 pt-72 pb-48" *ngIf="currentReport">
@@ -22,7 +45,7 @@
         <p *ngIf="currentReport?.description" [innerHTML]="transformHTML(currentReport.description)"></p>
         <ng-container *ngIf="!showLoader">
           <sui-tabset>
-            <!-- [telemetryInteractObject]="setTelemetryInteractObject(currentReport.id)" -->
+             [telemetryInteractObject]="setTelemetryInteractObject(currentReport.id)" 
             <div class="ui pointing secondary menu d-flex flex-ai-center">
               <a appTelemetryInteract [telemetryInteractObject]="setTelemetryInteractObject(currentReport.id)"
                 [telemetryInteractEdata]="setTelemetryInteractEdata('report-graph')" class="item" suiTabHeader="graph"
@@ -118,7 +141,7 @@
             <div class="ui bottom attached segment p-0 b-0 no-bg my-24" suiTabContent="graph">
               <div class="sb-graph-section p-24 my-24" *ngFor="let chart of chartData; let i = index; let l = last;">
                 <app-data-chart [telemetryInteractObject]="setTelemetryInteractObject(currentReport.id)" [chartInfo]="chart"></app-data-chart>
-                <!-- <hr *ngIf="!l" /> -->
+                <hr *ngIf="!l" /> 
               </div>
               <div class="ui warning message" *ngIf="!chartData.length">
                 {{resourceService?.frmelmnts?.lbl?.graphNotAvailable}}
@@ -147,4 +170,4 @@
     </div>
   </div>
 </div>
-</div>
+</div> -->
