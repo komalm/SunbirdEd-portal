@@ -75,11 +75,11 @@ const keycloakMergeGoogleDesktop = getKeyCloakClient({
 class GoogleOauth {
   createConnection(req) {
     const  { clientId, clientSecret } = GOOGLE_OAUTH_CONFIG;
+     const protocol = envHelper.SUNBIRD_PROTO;
     /* need to delete post debugging*/
-    const query = JSON.stringify(req.protocol)
-    logger.info({msg: 'google auth called with req object need to in oauth this log-->', query});
+    logger.info({msg: 'google auth protocol-->', protocol});
     /* need to delete post debugging*/
-    const redirect = `${req.protocol}://${req.get('host')}${redirectPath}`;
+    const redirect = `${protocol}://${req.get('host')}${redirectPath}`;
     return new google.auth.OAuth2(clientId, clientSecret, redirect);
   }
   generateAuthUrl(req) {
