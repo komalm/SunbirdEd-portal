@@ -1,13 +1,11 @@
 import { Component, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import * as _ from 'lodash-es';
-import { LibraryFiltersLayout } from '@project-sunbird/common-consumption-v8';
-import { ResourceService, LayoutService } from '@sunbird/shared';
+import { LibraryFiltersLayout } from '@project-sunbird/common-consumption';
+import { ResourceService, LayoutService, ConfigService } from '@sunbird/shared';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, merge, of, zip, BehaviorSubject } from 'rxjs';
-import { debounceTime, map, tap, switchMap, takeUntil, retry, catchError } from 'rxjs/operators';
+import { Subject, merge } from 'rxjs';
+import { debounceTime, map, tap, switchMap, takeUntil } from 'rxjs/operators';
 import { ContentSearchService } from '../../services';
-import { FormService } from '@sunbird/core';
-
 
 @Component({
   selector: 'app-search-filter',
@@ -25,10 +23,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   public optionData: any[] = [];
   public selectedBoard: { label: string, value: string, selectedOption: string };
   public selectedOption: { label: string, value: string, selectedOption: string };
-  public optionLabel = {
-    Publisher: this.resourceService.RESOURCE_CONSUMPTION_ROOT +
-      'frmelmnts.lbl.publisher', Board: this.resourceService.RESOURCE_CONSUMPTION_ROOT + 'frmelmnts.lbl.boards'
-  };
+  public optionLabel = { Publisher: this.resourceService.RESOURCE_CONSUMPTION_ROOT +
+    'frmelmnts.lbl.publisher', Board: this.resourceService.RESOURCE_CONSUMPTION_ROOT + 'frmelmnts.lbl.boards' };
   public boards: any[] = [];
   filterChangeEvent = new Subject();
   @Input() isOpen;
@@ -37,19 +33,24 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   @Output() filterChange: EventEmitter<{ status: string, filters?: any }> = new EventEmitter();
   @Input() layoutConfiguration;
   @Input() pageData;
-  @Input() facets$ = new BehaviorSubject({});
   selectedFilters = {};
   allValues = {};
   selectedNgModels = {};
-  private audienceList;
 
   constructor(public resourceService: ResourceService, private router: Router,
-    private contentSearchService: ContentSearchService,
+     private contentSearchService: ContentSearchService,
     private activatedRoute: ActivatedRoute, private cdr: ChangeDetectorRef,
-    public layoutService: LayoutService, private formService: FormService) { }
+     public layoutService: LayoutService, private configService: ConfigService) {
+  }
 
+  get audienceTypeMapping() {
+    return _.get(this.configService, 'appConfig.userTypeMapping') || {};
+  }
+  get audienceList() {
+    return _.map(this.audienceTypeMapping, (value, key) => ({ name: key }));
+  }
   get filterData() {
-    return _.get(this.pageData, 'metaData.filters') || ['medium', 'gradeLevel', 'board', 'channel', 'subject', 'audience', 'publisher', 'se_subjects', 'se_boards', 'se_gradeLevels', 'se_mediums'];
+    return _.get(this.pageData, 'search.facets') || ['medium', 'gradeLevel', 'board', 'channel', 'subject', 'audience', 'publisher'];
   }
   public getChannelId(index) {
     const { publisher: publishers = [] } = this.filters || {};
@@ -93,14 +94,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         switchMap(queryParams => {
           this.filterChange.emit({ status: 'FETCHING' });
           const boardName = _.get(queryParams, 'board[0]') || _.get(this.boards, '[0]');
-          return zip(this.getFramework({ boardName }), this.getAudienceTypeFormConfig())
-            .pipe(map(([filters, audienceTypeFilter]: [object, object]) => ({ ...filters, audience: audienceTypeFilter })));
+          return this.getFramework({ boardName });
         })
       );
   }
   ngOnInit() {
     this.checkForWindowSize();
-    merge(this.boardChangeHandler(), this.fetchSelectedFilterOptions(), this.handleFilterChange(), this.getFacets())
+    merge(this.boardChangeHandler(), this.fetchSelectedFilterOptions(), this.handleFilterChange())
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(null, error => {
         console.error('Error while fetching filters');
@@ -123,6 +123,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     return this.fetchFilters()
       .pipe(
         tap(filters => {
+          filters['audience'] = this.audienceList;
           filters = _.pick(filters || {}, this.filterData);
           this.filters = filters = this.sortFilters({ filters });
           this.updateBoardList();
@@ -148,20 +149,15 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
               this.pushNewFilter({ type, index });
             }
           } else {
-            if (type === 'subject') {
-              this.selectedNgModels['selected_subjects'] = event;
-            }
-            this.pushNewFilter({
-              type, updatedValues: _.map(event || [],
-                selectedValue => _.findIndex(this.allValues[type], val => val === selectedValue))
-            });
+            this.pushNewFilter({ type, updatedValues: _.map(event || [],
+              selectedValue => _.findIndex(this.allValues[type], val => val === selectedValue)) });
           }
           this.emitFilterChangeEvent();
         }));
   }
 
   private updateBoardList() {
-    if (_.get(this.filters, 'board') || !_.get(this.filters, 'board.length')) {
+    if (this.filters.board || !this.filters.board.length) {
       this.emptyBoard = true;
     }
     this.boards = this.allValues['board'] = this.filters.board || [];
@@ -184,7 +180,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
   private popFilter({ type, index }) {
     const selectedIndices = _.get(this.selectedFilters, type) || [];
-    _.remove(selectedIndices, (currentIndex) => {
+    _.remove(selectedIndices,  (currentIndex) => {
       return currentIndex === index;
     });
   }
@@ -218,23 +214,20 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         const filterValuesFromQueryParams = this.queryFilters[filterKey] || [];
         if (_.get(filterValuesFromQueryParams, 'length')) {
           const indices = _.filter(_.map(filterValuesFromQueryParams, queryParamValue => values.findIndex((val) =>
-            _.toLower(val) === _.toLower(queryParamValue))), index => index !== -1);
+          val === queryParamValue)), index => index !== -1);
           selectedIndices = _.get(indices, 'length') ? indices : this.getIndicesFromDefaultFilters({ type: filterKey });
         } else {
           selectedIndices = this.getIndicesFromDefaultFilters({ type: filterKey });
         }
         this.selectedFilters[filterKey] = selectedIndices;
         this.selectedNgModels[filterKey] = _.map(selectedIndices, index => this.allValues[filterKey][index]);
-        if (filterKey === 'subject') {
-          this.selectedNgModels['selected_subjects'] = filterValuesFromQueryParams;
-        }
       }
     });
   }
   private updateRoute(resetFilters?: boolean) {
     const selectedTab = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || 'textbook';
     this.router.navigate([], {
-      queryParams: resetFilters ? { selectedTab } : _.omit(this.getSelectedFilter() || {}, ['audienceSearchFilterValue']),
+      queryParams: resetFilters ? { selectedTab } : this.getSelectedFilter(),
       relativeTo: this.activatedRoute.parent
     });
   }
@@ -250,15 +243,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     });
     if (_.has(this.selectedFilters, 'publisher')) {
       filters['channel'] = _.compact(_.map(this.selectedFilters['publisher'], publisher => this.getChannelId(publisher)));
-    }
-    if (_.has(this.selectedNgModels, 'selected_subjects')) {
-      filters['subject'] = this.selectedNgModels['selected_subjects'] || [];
-    }
-    if (_.has(this.selectedFilters, 'audience')) {
-      filters['audienceSearchFilterValue'] = _.flatten(_.compact(_.map(filters['audience'] || {}, audienceType => {
-        const audience = _.find(this.audienceList || {}, { 'name': audienceType });
-        return audience ? _.get(audience, 'searchFilter') : null;
-      })));
     }
     filters['board'] = _.get(this.selectedBoard, 'selectedOption') ? [this.selectedBoard.selectedOption] : [];
     filters['selectedTab'] = _.get(this.activatedRoute, 'snapshot.queryParams.selectedTab') || 'textbook';
@@ -295,30 +279,5 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
   public resetFilters() {
     this.updateRoute(true);
-  }
-  private getAudienceTypeFormConfig() {
-    const formServiceInputParams = { formType: 'config', formAction: 'get', contentType: 'userType', component: 'portal' };
-    return this.formService.getFormConfig(formServiceInputParams).pipe(
-      map(response => _.map(_.filter(response, 'visibility'), value => {
-        const { code, searchFilter } = value;
-        return { name: code, searchFilter };
-      })),
-      tap(mapping => { this.audienceList = mapping; }),
-      retry(5),
-      catchError(err => of([]))
-    );
-  }
-
-  private getFacets() {
-    return this.facets$.pipe(tap(filters => {
-      filters = this.filters = { ...this.filters, ...this.sortFilters({ filters }) };
-      const categoryMapping = Object.entries(this.contentSearchService.getCategoriesMapping);
-      filters = _.mapKeys(filters, (value, filterKey) => {
-        const [key = null] = categoryMapping.find(([category, mappedValue]) => mappedValue === filterKey) || [];
-        return key || filterKey;
-      });
-      this.updateFiltersList({ filters });
-      this.hardRefreshFilter();
-    }));
   }
 }

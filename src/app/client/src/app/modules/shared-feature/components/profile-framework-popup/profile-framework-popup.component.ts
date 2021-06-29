@@ -174,7 +174,7 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
         const updatedRange = _.filter(current.range, range => _.find(parentAssociations, {code: range.code}));
         current.range = updatedRange.length ? updatedRange : current.range;
         current.range = _.unionBy(current.range, 'identifier');
-        if (!editMode) {
+        if (!editMode && current.code !== 'board') {
           this.selectedOption[current.code] = [];
         }
         accumulator.push(current);
@@ -183,7 +183,6 @@ export class ProfileFrameworkPopupComponent implements OnInit, OnDestroy {
           const updateField = current.code === 'board' ? current : _.find(this.formFieldOptions, { index: current.index});
           accumulator.push(updateField);
         } else { // empty filters and selection
-          current.range = [];
           this.selectedOption[current.code] = [];
           accumulator.push(current);
         }

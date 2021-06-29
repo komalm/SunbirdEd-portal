@@ -13,6 +13,7 @@ function getCassandraStoreInstance  () {
     'client': null,
     'clientOptions': {
       'contactPoints': contactPoints,
+      'localDataCenter': 'datacenter1',
       'keyspace': 'portal',
       'queryOptions': {
         'consistency': consistency,

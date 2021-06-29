@@ -3,10 +3,10 @@
         <div class="d-flex state-medium-container sb-bg-color-white">
             <div class="ui container d-flex flex-ai-center">
                 <div *ngIf="boards?.length" class="state-medium-container__dropdown">
-                    <div class="sb-field mb-0"><label>
+                    <div class="sb-field mb-0">
                         <app-select-option-group *ngIf="optionData" [optionData]="optionData"
                             [selectedOption]="selectedOption" (selectedValue)="selectedGroupOption($event);">
-                        </app-select-option-group></label>
+                        </app-select-option-group>
                     </div>
                 </div>
                 <div *ngIf="boards?.length && allValues?.medium?.length" class="state-medium-container__separator">
@@ -32,12 +32,12 @@
             <div class="ui container">
                 <div class="d-flex flex-ai-center flex-w-wrap">
                     <div *ngIf="allValues?.subject?.length" class="state-medium-container__dropdown">
-                        <div class="sb-field mb-0"><label>
+                        <div class="sb-field mb-0">
                             <sui-multi-select [hasLabels]="false" [(ngModel)]="selectedNgModels['subject']"
                                 (selectedOptionsChange)="filterChangeEvent.next({ event: $event, type: 'subject'})"
                                 defaultSelectionText={{resourceService?.frmelmnts?.lbl?.subject}}
                                 zeroSelectionText={{resourceService.frmelmnts.lbl.Select}}
-                                class="selection sbt-dropdown-tick text-cencapitalize"
+                                class="selection sbt-dropdown-tick"
                                 [ngClass]="!layoutConfiguration ? 'state-selection' : 'sbt-dropdown sbt-dropdown-bold sbt-dropdown--sm sbt-purple--lbg'">
                                 <div
                                     [ngClass]="!layoutConfiguration ? 'state-selection__section' : 'sbt-dropdown-section'">
@@ -45,19 +45,19 @@
                                         [value]="dropdownValue">
                                     </sui-select-option>
                                 </div>
-                            </sui-multi-select></label>
+                            </sui-multi-select>
                         </div>
                     </div>
 
                     <div *ngIf="allValues?.publisher?.length" class="state-medium-container__separator"> </div>
 
                     <div *ngIf="allValues?.publisher?.length" class="state-medium-container__dropdown">
-                        <div class="sb-field mb-0"><label>
+                        <div class="sb-field mb-0">
                             <sui-multi-select [hasLabels]="false" [(ngModel)]="selectedNgModels['publisher']"
                                 (selectedOptionsChange)="filterChangeEvent.next({ event: $event, type: 'publisher'})"
                                 defaultSelectionText={{resourceService?.frmelmnts?.lbl?.publishedBy}}
                                 zeroSelectionText={{resourceService.frmelmnts.lbl.Select}}
-                                class="selection sbt-dropdown-tick text-cencapitalize"
+                                class="selection sbt-dropdown-tick"
                                 [ngClass]="!layoutConfiguration ? 'state-selection' : 'sbt-dropdown sbt-dropdown-bold sbt-dropdown--sm sbt-purple--lbg'">
                                 <div
                                     [ngClass]="!layoutConfiguration ? 'state-selection__section' : 'sbt-dropdown-section'">
@@ -65,7 +65,7 @@
                                         [value]="dropdownValue">
                                     </sui-select-option>
                                 </div>
-                            </sui-multi-select></label>
+                            </sui-multi-select>
                         </div>
                     </div>
 
@@ -73,7 +73,7 @@
 
 
                     <div *ngIf="allValues?.audience?.length" class="state-medium-container__dropdown">
-                        <div class="sb-field mb-0"><label>
+                        <div class="sb-field mb-0">
                             <sui-multi-select [hasLabels]="false" [(ngModel)]="selectedNgModels['audience']"
                                 (selectedOptionsChange)="filterChangeEvent.next({ event: $event, type: 'audience'})"
                                 defaultSelectionText={{resourceService?.frmelmnts?.lbl?.userType}}
@@ -86,7 +86,7 @@
                                         [value]="dropdownValue">
                                     </sui-select-option>
                                 </div>
-                            </sui-multi-select></label>
+                            </sui-multi-select>
                         </div>
                     </div>
                     <button (click)="resetFilters()" appTelemetryInteract
@@ -128,7 +128,7 @@
                             </i>
                         </span>
                     </div>
-                    <div class="fsmall my-8 text-left filter-pref-text">{{resourceService.frmelmnts?.lbl?.basedOnPref | translate}}</div>
+                    <div class="fsmall my-8 text-left">{{resourceService.frmelmnts?.lbl?.basedOnPref | translate}}</div>
                     <div class="sbt-filter-scrollable pr-24">
                         <div *ngIf="boards?.length" class="w-100">
                             <app-select-option-group [layoutConfiguration]="layoutConfiguration" class="w-100"
@@ -161,7 +161,7 @@
                                     (selectedOptionsChange)="filterChangeEvent.next({ event: $event, type: 'subject'})"
                                     defaultSelectionText={{resourceService?.frmelmnts?.lbl?.subject}}
                                     zeroSelectionText={{resourceService.frmelmnts.lbl.Select}}
-                                    class="selection sbt-dropdown-tick text-cencapitalize"
+                                    class="selection sbt-dropdown-tick"
                                     [ngClass]="!layoutConfiguration ? 'state-selection' : 'sbt-dropdown sbt-dropdown-bold sbt-dropdown--sm sbt-purple--lbg'">
                                     <div
                                         [ngClass]="!layoutConfiguration ? 'state-selection__section' : 'sbt-dropdown-section'">
@@ -181,7 +181,7 @@
                                     (selectedOptionsChange)="filterChangeEvent.next({ event: $event, type: 'publisher'})"
                                     defaultSelectionText={{resourceService?.frmelmnts?.lbl?.publishedBy}}
                                     zeroSelectionText={{resourceService.frmelmnts.lbl.Select}}
-                                    class="selection sbt-dropdown-tick text-cencapitalize"
+                                    class="selection sbt-dropdown-tick"
                                     [ngClass]="!layoutConfiguration ? 'state-selection' : 'sbt-dropdown sbt-dropdown-bold sbt-dropdown--sm sbt-purple--lbg'">
                                     <div
                                         [ngClass]="!layoutConfiguration ? 'state-selection__section' : 'sbt-dropdown-section'">
