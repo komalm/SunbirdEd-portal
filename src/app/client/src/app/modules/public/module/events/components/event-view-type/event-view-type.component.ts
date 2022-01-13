@@ -68,6 +68,9 @@ export class EventViewTypeComponent implements OnInit {
   myEventsCount : any;
   tempFilterKeyName :any;
   sort_by:any;
+  todaysCalenderEvent: any[];
+  todaysDate: any;
+  tempFlag?: any;
 
   constructor(public eventListService: EventListService,
     public eventFilterService: EventFilterService,
@@ -86,6 +89,7 @@ export class EventViewTypeComponent implements OnInit {
     this.showFilters();
     this.showCalenderEvent();
     this.setEventConfig();
+    this.showCalenderDateData();
   }
 
   initLayout() {
@@ -212,130 +216,8 @@ export class EventViewTypeComponent implements OnInit {
     };
   }
 
-//  getFilteredData(event) {
-//    if(event.search) {
-//      this.Filterdata ={
-//        "status":["live"],
-//        "objectType": "Event",
-//      };
-
-//      this.query=event.target.value;
-//    }
-//    else if((event.filtersSelected.eventTime) && (event.filtersSelected.eventType))
-//    {
-//      switch (event.filtersSelected.eventTime) {
-//         case "Past":
-//           this.dates={
-//             "max":this.yesterdayDate
-//           }
-//         break;
-
-//         case "Upcoming":
-//           this.dates={
-//            "min":this.tommorrowDate
-//           }
-//         break;
-
-//         default:
-//           this.dates={
-//             "min":this.todayDate,
-//             "max":this.todayDate
-//           }
-//         break;
-//      }
-
-//      this.Filterdata ={
-//        "status":["live"],
-//        "eventType" :event.filtersSelected.eventType,
-//        "startDate":this.dates,
-//        "objectType": "Event"
-//      };
-//    }
-//    else if(event.filtersSelected.eventType)
-//    {
-//        this.Filterdata ={
-//          "status":["live"],
-//          "eventType" :event.filtersSelected.eventType,
-//          "objectType": "Event"
-//        };
-//    }
-//    else if(event.filtersSelected.eventTime)
-//    {
-//        switch (event.filtersSelected.eventTime) {
-//          case "Past":
-//            this.dates={
-//              "max":this.yesterdayDate
-//            }
-//              break;
-//          case "Upcoming":
-//            this.dates={
-//              "min":this.tommorrowDate
-//            }
-//              break;
-//          default:
-//            this.dates={
-//              "min":this.todayDate,
-//              "max":this.todayDate
-//            }
-//          break;
-//        }
-//        this.Filterdata ={
-//          "status":["live"],
-//          "startDate" :this.dates,
-//          "objectType": "Event"
-//        };
-//    }
-//    else
-//    {
-//      this.Filterdata ={
-//        "status":["live"],
-//        "objectType": "Event"
-//      };
-//    }
-
-//    // Loader code
-//    this.tab == "list" ? this.isLoading = true : this.isLoading = false;
-
-//    this.eventListService.getEventList(this.Filterdata,this.query).subscribe((data) => {
-//     if (data.responseCode == "OK") {
-//         this.isLoading=false;
-//         this.EventCount= data.result.count;
-//         this.eventList = data.result.Event;
-//         this.eventListCount= data.result.count;
-
-//         this.eventList.forEach((item, index) => {
-//           var array = JSON.parse("[" + item.venue + "]");
-//           this.eventList[index].venue = array[0].name;
-//          });
-
-//         // For calendar events
-//         if(data.result.count > 0) {
-//           this.events = this.eventList.map(obj => ({
-//             start: new Date(obj.startDate),
-//             title: obj.name,
-//             starttime: obj.startTime,
-//             end: new Date(obj.endDate),
-//             color: colors.red,
-//             cssClass: obj.color,
-//             status: obj.status,
-//             onlineProvider: obj.onlineProvider,
-//             audience: obj.audience,
-//             owner: obj.owner,
-//             identifier:obj.identifier,
-//             appIcon: obj.appIcon,
-//           }));
-//         } else {
-//           this.events = [];
-//         }
-//     }
-//    }, (err) => {
-//        this.isLoading=false;
-//        this.toasterService.error('Something went wrong, please try again later...');
-
-//    });
-//  }
-
 getFilteredData(event) {
+  this.tempFlag = true;
   if (event.search) {
     this.Filterdata = {
       "status": ["live"],
@@ -592,4 +474,35 @@ getFilteredData(event) {
   this.router.navigate(['/explore-events/detail'],
   { queryParams:  { eventId: event.identifier } });
  }
+
+ showCalenderDateData(){
+  this.todaysDate = this.todayDate;
+  this.dates = {
+    "min": this.todayDate      
+  }
+  this.Filterdata = {
+    "status": ["live"],
+    "startDate": this.dates,
+    //"identifier":idList,
+    "objectType": "Event"
+  };
+  this.eventListService.getEventList(this.Filterdata, this.query).subscribe((data) => {
+    if (data.responseCode == "OK") {
+      this.todaysCalenderEvent = data.result.Event;
+      this.todaysCalenderEvent.forEach((item, index) => {
+        // if (item.eventType != 'Offline')
+        {
+           var array = JSON.parse("[" + item.venue + "]");
+           this.eventList[index].venue = array[0].name;
+          // console.log('array- ', array, 'Index = ', index);
+          this.todaysCalenderEvent[index].venue = array[0].name;
+        }
+       });
+      //this.tempV='resolve';
+      //console.log("LIST DAtA :: ", this.list , this.tempV);
+    }
+  }, (err) => {
+  });
+}
+
 }
