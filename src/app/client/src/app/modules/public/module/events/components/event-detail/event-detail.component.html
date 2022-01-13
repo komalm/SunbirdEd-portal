@@ -26,7 +26,8 @@
       <sb-cover-event-detail
         *ngIf="eventItem"
         [eventDetailItem]="eventItem"
-        (navToDashbord)="navToDashbord($event);"  >
+        (navToDashbord)="navToDashbord($event);"
+        [isDetalPage]="true"  >
       </sb-cover-event-detail>
 
       <!-- <sb-join-event-button
