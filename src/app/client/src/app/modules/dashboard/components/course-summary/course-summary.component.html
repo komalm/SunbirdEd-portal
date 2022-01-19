@@ -8,6 +8,7 @@
                     [datasets]="barChartData"
                     [labels]="barChartLabels"
                     [options]="barChartOptions"
+                    [colors]="barChartColors"
                     [legend]="barChartLegend"
                     [chartType]="barChartType">
             </canvas>
@@ -18,6 +19,7 @@
               [labels]="pieChartLabels" 
               [chartType]="pieChartType"
               [options]="pieChartOptions"
+              [colors]="pieChartColors"
               [plugins]="pieChartPlugins"
               [legend]="pieChartLegend">
             </canvas>
@@ -33,11 +35,8 @@
           <table class="sb-table sb-table-striped sb-table-sortable sb-table-fixed sb-table-course-dashboard">
             <thead>
               <tr>
-                <th class="w-20">Course Name</th>
-                <th class="w-20">Course ID</th>
-                <th class="w-20">Batch Name</th>
-                <th class="">Batch Id</th>
-                <th class="">Lesson Count</th>
+                <th class="">Course Name</th>
+                <th class="">Batch Name</th>
                 <th class="">Users Enrolled</th>
                 <th class="">Users Completed</th>
               </tr>
@@ -45,10 +44,7 @@
             <tbody>
               <tr *ngFor="let data of courseBatchesData  | paginate: { itemsPerPage: paginateLimit, currentPage: p } let i = index ">
                 <td data-label="Name">{{data.name}}</td>
-                <td data-label="Identifier">{{data.identifier}}</td>
                 <td data-label="BatchName">{{data.batchName}}</td>
-                <td data-label="BatchId">{{data.batchId}}</td>
-                <td data-label="LessonCount">{{'0'}}</td>
                 <td data-label="TotalEnrolled">{{data.totalEnrolled}}</td>
                 <td data-label="TotalCompleted">{{data.totalCompleted}}</td>
               </tr>
