@@ -40,7 +40,7 @@
         *ngIf="eventItem"
         [layoutConfig]="layoutConfiguration"
         (eventDetailData)="navToEventDetail($event)"
-        [eventDetailItem]="eventItem">
+        [eventDetailItem]="eventItem" [eventCreatorInfo]="eventCreatorInformation">
       </sb-advance-event-detail>
     </div>
   </div>
