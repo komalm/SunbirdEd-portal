@@ -39,10 +39,11 @@ export class DetailedUserReportComponent implements OnInit {
     this.initConfiguration();
     this.activatedRoute.queryParams.subscribe((params) => {
       this.queryParams =  params;
-      console.log("this.queryparames", JSON.parse(this.queryParams.userDetails).event);
+      // console.log("this.queryparames", JSON.parse(this.queryParams.userDetails).event);
     });
     if (this.queryParams) {
        this.attendanceList = JSON.parse(this.queryParams.userDetails).event;
+       this.eventItem = JSON.parse(this.queryParams.eventDetails).eventItem;
        this.getEnrollEventUsersData(this.attendanceList);
     }
   }
