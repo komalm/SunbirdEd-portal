@@ -38,7 +38,7 @@ export class CourseSummaryComponent implements OnInit{
 
   courseBatchesData:any;
   arrrayCourseReports : any = [];
-  @Input() paginateLimit: number = 5;
+  @Input() paginateLimit: number = 12;
   p: any;
 
   // Bar chart
@@ -48,6 +48,7 @@ export class CourseSummaryComponent implements OnInit{
   barChartData:any;
   public barChartOptions:any;
   orgIds : any;
+  public barChartColors:any;
 
   // Pie chart
   pieChartOptions : any;
@@ -56,6 +57,7 @@ export class CourseSummaryComponent implements OnInit{
   pieChartType = 'pie';
   pieChartLegend : boolean= true;
   pieChartPlugins = [];
+  public pieChartColors:any;
 
   ngOnInit()
   {
@@ -66,6 +68,7 @@ export class CourseSummaryComponent implements OnInit{
       var courseBatchesIds: string[] = [];
       var totalCourseEnrolled: string[] = [];
       var totalCourseCompleted: string[] = [];
+      var totalCourseInCompleted: number[] = [];
       var totalCompleted = 0;
       var totalEnrolled = 0;
       var totalIncompleted = 0;
@@ -74,15 +77,21 @@ export class CourseSummaryComponent implements OnInit{
       if(value.batchId || value.totalCompleted)
       {
         courseBatchesIds.push(value.batchName);
-        totalCourseEnrolled.push(value.totalEnrolled);
+        // totalCourseEnrolled.push(value.totalEnrolled);
         totalCourseCompleted.push(value.totalCompleted);
 
+        //for incomplete course calculation
+        var courseInComplete = value.totalEnrolled - value.totalCompleted ;
+        totalCourseInCompleted.push(courseInComplete);
         totalCompleted = totalCompleted + value.totalCompleted;
         totalEnrolled = totalEnrolled + value.totalEnrolled;         
       }
       });
       totalIncompleted = totalEnrolled - totalCompleted;
-      this.createBarGraph(courseBatchesIds,totalCourseEnrolled,totalCourseCompleted);
+      
+      // this.createBarGraph(courseBatchesIds,totalCourseEnrolled,totalCourseCompleted);
+      this.createBarGraph(courseBatchesIds,totalCourseCompleted,totalCourseInCompleted);
+
       this.createPieChart(totalIncompleted,totalCompleted);
     }
     },(err) => {
@@ -90,7 +99,7 @@ export class CourseSummaryComponent implements OnInit{
     });
   }
 
-  createBarGraph(courseBatcheIds,totalCourseEnrolled,totalCourseCompleted)
+  createBarGraph(courseBatcheIds,totalCourseCompleted,totalCourseInCompleted)
   {
     this.barChartOptions = {
     scaleShowVerticalLines: false,
@@ -99,7 +108,7 @@ export class CourseSummaryComponent implements OnInit{
     yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Total Enrollled and Total Completed Courses'
+          labelString: 'Total Completed and Total Incompleted Courses'
         }
     }],
     xAxes: [{
@@ -110,16 +119,19 @@ export class CourseSummaryComponent implements OnInit{
     }]
     },
     title: {
-    text: 'Course wise Completion',
+    text: 'Batch wise Completion',
     display: true
     }
     };
     this.barChartLabels = courseBatcheIds;
     this.barChartType = 'bar';
     this.barChartLegend = true;
-
+    this.barChartColors = [
+      { backgroundColor: 'orange' },
+      { backgroundColor: 'green' },
+    ];
     this.barChartData = [
-      {data: totalCourseEnrolled, label: 'Total Enrolled', stack: 'a'},
+      {data: totalCourseInCompleted, label: 'Total Incomplete', stack: 'a'},
       {data: totalCourseCompleted, label: 'Total Completed', stack: 'a'}
     ];
   }
@@ -134,7 +146,15 @@ export class CourseSummaryComponent implements OnInit{
       }
     };
 
-    this.pieChartLabels = ['Total Completed', 'Total Incomplete'];
+    this.pieChartColors = [
+      {
+        backgroundColor: [
+          'orange',
+          'green',
+        ]
+      }
+    ];
+    this.pieChartLabels = ['Total Incompleted', 'Total Complete'];
     this.pieChartData = [totalIncompleted, totalCompleted];
     this.pieChartType = 'pie';
     this.pieChartLegend = true;
