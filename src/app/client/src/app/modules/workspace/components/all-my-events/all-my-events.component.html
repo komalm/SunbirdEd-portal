@@ -9,7 +9,9 @@
       <div class="w-100 sb-g-col-xs-12 sb-g-col-md-9 sb-g-col-lg-9 sb-g-col-xxxl-12" >
         <sb-event-filter (filterChangeEvent)="getFilteredData($event)"
         *ngIf="filterConfig"
-        [filterConfig]="filterConfig"> </sb-event-filter>
+        [filterConfig]="filterConfig"
+        [isSorting] = "true"
+        (sortingQuery) = "sortData($event)"> </sb-event-filter>
         <!-- <sb-event-filter *ngIf="filterConfig" [filterConfig]="filterConfig"></sb-event-filter> -->
         <div *ngIf="eventList?.length > 0 && eventList != 'undefined'" >
           <sb-event-list
