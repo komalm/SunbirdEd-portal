@@ -17,6 +17,7 @@ import { forkJoin, Subject, Observable, BehaviorSubject, merge, of, concat, comb
 export class EventDetailComponent implements OnInit {
   eventItem: any;
   eventList: any;
+  eventCreatorInformation: any;
 
   userId: any;
   eventConfig: any;
@@ -42,6 +43,9 @@ export class EventDetailComponent implements OnInit {
   showEventDetailPage(identifier) {
     this.eventDetailService.getEvent(identifier).subscribe((data: any) => {
       this.eventItem = data.result.event;
+      this.userService.getUserData(this.eventItem.owner).subscribe(data => {
+        this.eventCreatorInformation = data.result.response;
+      });
     },
       (err: any) => {
         console.log('err = ', err);
