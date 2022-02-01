@@ -35,7 +35,7 @@ export class EventSummaryComponent implements OnInit{
   }
 
   eventBatchesData:any;
-  arrrayCourseReports : any =[];
+  arrrayEventReports : any =[];
   @Input() paginateLimit: number = 5;
   p: any;
 
@@ -151,9 +151,9 @@ export class EventSummaryComponent implements OnInit{
       EventReportsData.UsersEnrolled = item.totalEnrolled;
       EventReportsData.UsersCompleted = item.totalCompleted;
 
-      this.arrrayCourseReports.push(EventReportsData);      
+      this.arrrayEventReports.push(EventReportsData);      
     });
 
-    this.eventSummaryCourses.downloadFile(this.arrrayCourseReports, 'course-report');
+    this.eventSummaryCourses.downloadFile(this.arrrayEventReports, 'event-report');
   }
 }
