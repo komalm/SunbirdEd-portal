@@ -35,8 +35,10 @@ export class EventSummaryComponent implements OnInit{
   }
 
   eventBatchesData:any;
+
   arrrayCourseReports : any =[];
   @Input() paginateLimit: number = 12;
+
   p: any;
 
   // Bar chart
@@ -173,9 +175,9 @@ export class EventSummaryComponent implements OnInit{
       EventReportsData.UsersEnrolled = item.totalEnrolled;
       EventReportsData.UsersCompleted = item.totalCompleted;
 
-      this.arrrayCourseReports.push(EventReportsData);      
+      this.arrrayEventReports.push(EventReportsData);      
     });
 
-    this.eventSummaryCourses.downloadFile(this.arrrayCourseReports, 'course-report');
+    this.eventSummaryCourses.downloadFile(this.arrrayEventReports, 'event-report');
   }
 }
