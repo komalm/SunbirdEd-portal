@@ -8,6 +8,7 @@ import {EventListService} from 'ngtek-event-library';
 import { EventFilterService } from 'ngtek-event-library';
 import { from } from 'rxjs';
 import {ToasterService}from '@sunbird/shared';
+import { createDirective } from '@angular/compiler/src/core';
 const colors: any = {
   red: {
     primary: '#ad2121',
@@ -46,6 +47,7 @@ export class AllMyEventsComponent implements OnInit {
   EventListCount: any;
   query: any;
   today = new Date();
+  sort_by: any;
   todayDate = this.today.getFullYear() + '-' + ('0' + (this.today.getMonth() + 1)).slice(-2) + '-' + ('0' + (this.today.getDate())).slice(-2);
   yesterdayDate = this.today.getFullYear() + '-' + ('0' + (this.today.getMonth() + 1)).slice(-2) + '-' + ('0' + (this.today.getDate()-1)).slice(-2);
   tommorrowDate = this.today.getFullYear() + '-' + ('0' + (this.today.getMonth() + 1)).slice(-2) + '-' + ('0' + (this.today.getDate()+1)).slice(-2);
@@ -78,12 +80,11 @@ export class AllMyEventsComponent implements OnInit {
       "owner":this.userService.userid
       };
     this.eventListService.getEventList( this.Filterdata).subscribe((data:any)=>{
-       console.log("listdata = ",data.result?.Event);
        this.eventList = data.result?.Event;
        this.EventListCount= data.result?.count;
       
       this.isLoading = false;
-    },err=>{console.log("here",err);}
+    },err=>{console.log("err",err);}
     )
   }
 
@@ -293,6 +294,17 @@ export class AllMyEventsComponent implements OnInit {
         this.toasterService.error(err.error.result.messages[0]);
      
       });
+  }
+
+ sortData(event){
+  this.sort_by = {[event.filterStatus[0].sort_by]:event.filterStatus[0].SortType ? 'desc' : 'asc'};
+
+    this.eventListService.getEventList(this.Filterdata,'', this.sort_by).subscribe((data:any)=>{
+      this.eventList = data.result?.Event;
+      this.EventListCount= data.result?.count;
+     this.isLoading = false;
+   },err=>{console.log("err",err);}
+   )
   }
 
 }

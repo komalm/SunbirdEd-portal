@@ -3,7 +3,7 @@
     <!-- <div class="sb-g"
       [ngClass]="layoutConfiguration ? 'sb-g sbt-container sbt-page-content relative9' : 'sb-g'"> -->
     <div
-      [ngClass]="layoutConfiguration ? 'sb-g sbt-container sbt-page-content relative9' : 'sb-g ui container mt-24'">
+      [ngClass]="layoutConfiguration ? 'sbt-container sbt-page-content relative9' : 'ui container mt-24'">
         <div class="relative9">
             <div class="ui container py-8">
             <button
@@ -25,7 +25,7 @@
             <sb-enroll-event-users *ngIf="eventUserEnrollData && eventItem"
                 [eventDetailItem]="eventItem"
                 [enrollEventDetails]="eventUserEnrollData"
-                (detailedReport)="navToDetailedAttendance($event)">
+                (detailedReport)="navToDetailedAttendance($event, eventItem)">
             </sb-enroll-event-users>
             <div *ngIf="!eventUserEnrollData">
                 <div class="no-content-container d-flex flex-jc-center relative9">

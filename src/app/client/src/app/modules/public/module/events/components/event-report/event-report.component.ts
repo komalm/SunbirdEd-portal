@@ -143,8 +143,9 @@ export class EventReportComponent implements OnInit {
      console.log("eventUserEnrollData Details : ", this.eventUserEnrollData);
   }
   // navToDetailedAttendance($event)
-  navToDetailedAttendance(event){
+  navToDetailedAttendance(event,eventItem){
     this.router.navigate(['/explore-events/detailed-user-report'],
-    { queryParams:  { "userDetails": JSON.stringify({event})} });
+    { queryParams:  { "userDetails": JSON.stringify({event}), "eventDetails": JSON.stringify({eventItem})} });
+    // ,"eventDetails": JSON.stringify({this.eventItem})
   }
 }

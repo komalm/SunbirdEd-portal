@@ -46,7 +46,7 @@ export class SummaryReportsService {
   * To convert the table data for downloading
   */ 
    downloadFile(data, filename='data') {
-    let csvData = this.ConvertToCSV(data, ['CourseName','CourseId', 'BatchName', 'BatchId', 'LessonCount', 'UsersEnrolled', 'UsersCompleted']); 
+    let csvData = this.ConvertToCSV(data, ['CourseName', 'BatchName', 'UsersEnrolled', 'UsersCompleted']); 
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
